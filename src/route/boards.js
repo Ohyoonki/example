@@ -12,7 +12,7 @@ let boards = [{
 
 router.get("/", (req, res) => {
   
-    res.send("1");
+    res.send("get all");
 });
 
 router.get("/:id", (req, res) => {
