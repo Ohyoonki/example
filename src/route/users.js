@@ -1,52 +1,55 @@
 const express = require("express");
 const router = express.Router();
-const _ = require("lodash");
+const models = require("../models");
 
-const Sequelize = require("sequelize");
-const sequelize =  new Sequelize("node_example", "root", "1234", 
-{ host: "localhost", dialect: "mysql" });
+const User = models.user;
+// const _ = require("lodash");
 
-const check_sequelize_auth = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log("연결 성공");
-    } catch (err) {
-        console.log("연결 실패 ", err);
-    }
-};
+// const Sequelize = require("sequelize");
+// const sequelize =  new Sequelize("node_example", "root", "1234", 
+// { host: "localhost", dialect: "mysql" });
 
-check_sequelize_auth();
+// const check_sequelize_auth = async () => {
+//     try {
+//         await sequelize.authenticate();
+//         console.log("연결 성공");
+//     } catch (err) {
+//         console.log("연결 실패 ", err);
+//     }
+// };
 
-const User = sequelize.define("user", {
-    name: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    address: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }
-});
+// check_sequelize_auth();
 
-User.sync({ force: true }).then(() => {
-    return User.create({
-        name: "홍길동",
-        address: "seoul"
-    });
-}).then(() => {
-    return User.create({
-        name: "김철수",
-        address: "anyang"
-    });
-});
+// const User = sequelize.define("user", {
+//     name: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
+//     address: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     }
+// });
 
-let users = [{
-    id: 1,
-    name: "홍길동"
-},{
-    id: 2,
-    name: "강철수"
-}];
+// User.sync({ force: true }).then(() => {
+//     return User.create({
+//         name: "홍길동",
+//         address: "seoul"
+//     });
+// }).then(() => {
+//     return User.create({
+//         name: "김철수",
+//         address: "anyang"
+//     });
+// });
+
+// let users = [{
+//     id: 1,
+//     name: "홍길동"
+// },{
+//     id: 2,
+//     name: "강철수"
+// }];
 
 router.get("/", async(req, res) => {
     let result = await User.findAll({
@@ -80,6 +83,7 @@ router.post("/", async(req, res) => {
     let result = false;
     try {
         await User.create({id: req.body.id, name: req.body.name, address: req.body.address});
+        User.setboard({name: "AS"})
         result = true;
     } catch(err) {
         console.error(err);

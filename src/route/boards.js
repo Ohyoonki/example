@@ -1,39 +1,121 @@
 const express = require("express");
 const router = express.Router();
-const _ = require("lodash");
+const models = require("../models");
 
-let boards = [{
-    id: 1,
-    name: "홍길동"
-},{
-    id: 2,
-    name: "강철수"
-}];
+const Board = models.user;
+// const _ = require("lodash");
 
-router.get("/", (req, res) => {
-  
-    res.send("get all");
+
+// const Sequelize = require("sequelize");
+// const sequelize =  new Sequelize("node_example", "root", "1234", 
+// { host: "localhost", dialect: "mysql" });
+
+// const check_sequelize_auth = async () => {
+//     try {
+//         await sequelize.authenticate();
+//         console.log("연결 성공");
+//     } catch (err) {
+//         console.log("연결 실패 ", err);
+//     }
+// };
+
+// check_sequelize_auth();
+
+// const Board = sequelize.define("boards", {
+//     title: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
+//     content: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
+//     viewCount: {
+//         type: Sequelize.INTEGER,
+//         defaultValue: 0,
+//         allowNull: false
+//     }
+// });
+
+// // Example data
+// Board.sync({ force: true }).then(() => {
+//     return Board.create({
+//         title: "FGJH",
+//         content: "FHJ",
+//         viewCount: 0
+//     });
+// }).then(() => {
+//     return Board.create({
+//         title: "FGJH",
+//         content: "FJH",
+//         viewCount: 0
+//     });
+// });
+
+router.get("/", async(req, res) => {
+    let result = await Board.findAll({
+        attributes: ["title"]
+    });
+    res.send(result);
 });
 
-router.get("/:id", (req, res) => {
-  
-    res.send("get");
+router.get("/:id", async(req, res) => {
+    let result = await Board.findOne({
+        where: {
+            id: req.params.id
+        }
+    });
+    res.send(result);
 });
 
-router.post("/", (req, res) => {
- 
-    res.send("post");
+router.post("/", async(req, res) => {
+    let result = false;
+    try {
+        await Board.create({id: req.body.id, title: req.body.title, content: req.body.content});
+        result = true;
+    } catch(err) {
+        console.error(err);
+    }
+    res.send(result);
 });
 
-router.put("/:id", (req, res) => {
-   
+router.put("/:id", async(req, res) => {
+    let result = false;
+    try {
+        await Board.update(
+            {
+                title: req.body.title,
+                content: req.body.content
+            },
+            {
+                where: {
+                    id: req.params.id
+                }
+            }
+        );
+        result = true;
+    } catch (err) {
+        console.error(err);
+    }
 
-    res.send("put");
+    res.send(result);
 });
 
-router.delete("/:id", (req, res) => {
-   
-    res.send("delete");
+router.delete("/:id", async(req, res) => {
+    let result = false;
+    try {
+        await Board.destroy(
+            {
+                where: {
+                    id: req.params.id
+                }
+            }
+        );
+        result = true;
+    } catch (err) {
+        console.error(err);
+    }
+    res.send(result);
 });
 
 module.exports = router;
